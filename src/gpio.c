@@ -45,7 +45,6 @@ void gpioInit()
     GPIO_PinModeSet(LCDSELPort, LCDSELPin, gpioModePushPull, false);
     GPIO_PinModeSet(gpioPortA, 1, gpioModePushPull, false);
 
-    GPIO_PinOutSet(LCDSELPort, LCDSELPin);
 
 	  gpsReset(GPS_RESET_HIGH);
 
@@ -55,9 +54,8 @@ void gpioInit()
 
 void gpioSensorEnable()
 {
-    // Enable the temp-humidity sensor
-    GPIO_PinOutSet(MAX30101Port, MFIOPin);
-
+    // Enable the LCD
+  GPIO_PinOutSet(LCDSELPort, LCDSELPin);
 }
 
 void gpioSensorDisable()
