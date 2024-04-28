@@ -24,7 +24,11 @@
 #include "gpio.h"
 
 
-
+// LCD EXTCOMIN pin is PA0
+#define EXTCOMINPort (gpioPortA)
+#define EXTCOMINPin  (5)
+#define LCDSELPort   (gpioPortB)
+#define LCDSELPin    (11)
 
 
 void gpioInit()
@@ -35,6 +39,13 @@ void gpioInit()
 	  GPIO_PinModeSet(MAX30101Port, MFIOPin, gpioModePushPull, false);
 	  GPIO_PinModeSet(GPSPort, gpsResetPin, gpioModePushPull, false);
 	  GPIO_PinModeSet(GPSPort, gpsSelPin, gpioModePushPull, false);
+
+    // Set EXTCOMIN GPIO pin to push-pull mode
+	  GPIO_PinModeSet(EXTCOMINPort, EXTCOMINPin, gpioModePushPull, false);
+    GPIO_PinModeSet(LCDSELPort, LCDSELPin, gpioModePushPull, false);
+    GPIO_PinModeSet(gpioPortA, 1, gpioModePushPull, false);
+
+    GPIO_PinOutSet(LCDSELPort, LCDSELPin);
 
 	  gpsReset(GPS_RESET_HIGH);
 
@@ -80,6 +91,31 @@ void powerGPS(uint8_t flag)
 }
 
 
+void gpioSetDisplayExtcomin(bool setPin)
+{
+  if(setPin)
+  {
+      // Enable EXTCOMIN pin
+      // GPIO_PinOutSet(LCDSELPort, LCDSELPin);
+      GPIO_PinOutSet(EXTCOMINPort, EXTCOMINPin);
+  }
+  else
+  {
+      // Disable EXTCOMIN pin
+      // GPIO_PinOutClear(LCDSELPort, LCDSELPin);
+      GPIO_PinOutClear(EXTCOMINPort, EXTCOMINPin);
+  }
+}
+
+void gpioLEDOn()
+{
+  GPIO_PinOutSet(gpioPortA, 1);
+}
+
+void gpioLEDOff()
+{
+  GPIO_PinOutClear(gpioPortA, 1);
+}
 
 
 

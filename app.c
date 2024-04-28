@@ -163,9 +163,10 @@ SL_WEAK void app_init(void)
   i2c_init();
 
 
-  config_sensor();
 
    timerWaitUs_irq(20000);
+
+   config_sensor();
 //  bme280_meas();
 
   // MAX30101 stuff
@@ -263,15 +264,14 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 //  LOG_INFO("Inside sl_bt_on_event\r\n");
   // Just a trick to hide a compiler warning about unused input parameter evt.
   //(void) evt;
-
   // For A5 onward:
   // Some events require responses from our application code,
   // and don’t necessarily advance our state machines.
   // For A5 uncomment the next 2 function calls
-//  bt_handle_event(evt); // put this code in ble.c/.h
+  bt_handle_event(evt); // put this code in ble.c/.h
 
   // sequence through states driven by events
-//  temperature_state_machine(evt);    // put this code in scheduler.c/.h
+  temperature_state_machine(evt);    // put this code in scheduler.c/.h
 
 
 } // sl_bt_on_event()

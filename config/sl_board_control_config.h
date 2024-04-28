@@ -25,14 +25,14 @@
 
 // <gpio> SL_BOARD_ENABLE_VCOM
 // $[GPIO_SL_BOARD_ENABLE_VCOM]
-#define SL_BOARD_ENABLE_VCOM_PORT                gpioPortA
-#define SL_BOARD_ENABLE_VCOM_PIN                 5
+#define SL_BOARD_ENABLE_VCOM_PORT                gpioPortB
+#define SL_BOARD_ENABLE_VCOM_PIN                 13
 // [GPIO_SL_BOARD_ENABLE_VCOM]$
 
 // <gpio> SL_BOARD_ENABLE_DISPLAY
 // $[GPIO_SL_BOARD_ENABLE_DISPLAY]
-#define SL_BOARD_ENABLE_DISPLAY_PORT             gpioPortD
-#define SL_BOARD_ENABLE_DISPLAY_PIN              15
+#define SL_BOARD_ENABLE_DISPLAY_PORT             gpioPortB
+#define SL_BOARD_ENABLE_DISPLAY_PIN              11
 // [GPIO_SL_BOARD_ENABLE_DISPLAY]$
 
 // <gpio> SL_BOARD_ENABLE_SENSOR_RHT

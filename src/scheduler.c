@@ -153,6 +153,7 @@ void temperature_state_machine(sl_bt_msg_t *event)
 
       if(current_event == eventUF)
       {
+          gpioLEDOn();
           // gpioSensorEnable();
           timerWaitUs_irq(80000);
           nextState = STATE_COMP1_EVENT;
@@ -165,6 +166,7 @@ void temperature_state_machine(sl_bt_msg_t *event)
       nextState = STATE_COMP1_EVENT;
       if(current_event == eventCOMP1)
       {
+          gpioLEDOff();
         //  sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
         //  i2c_send_cmd();
          if(!(ble_data -> connection_open_flag && ble_data -> indication_temp_measurement_en))

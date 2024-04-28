@@ -83,5 +83,14 @@ void gpsReset(uint8_t flag);
 
 void powerGPS(uint8_t flag);
 
+/*
+ * @func        gpioSetDisplayExtcomin()
+ *
+ * @brief       Enable EXTCOMIN Pin
+ */
+void gpioSetDisplayExtcomin(bool setPin);
+void gpioLEDOn();
+void gpioLEDOff();
+
 
 #endif /* SRC_GPIO_H_ */

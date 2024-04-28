@@ -17,6 +17,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "sl_bt_api.h"
+#include "src/scheduler.h"
 
 // Macros to convert integers to bitstream
 #define UINT8_TO_BITSTREAM(p, n)  {*(p)++ = (uint8_t)(n);}

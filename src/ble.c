@@ -15,8 +15,10 @@
 #include "gatt_db.h"
 #include <stdbool.h>
 
-#define INCLUDE_LOG_DEBUG 1
+//#define INCLUDE_LOG_DEBUG 1
 #include "src/log.h"
+
+#include "src/lcd.h"
 
 #define ADVERTISING_MIN_MS (400) // 250 ms / 0.625 ms
 #define ADVERTISING_MAX_MS (400) // 250 ms / 0.625 ms
@@ -101,12 +103,30 @@ void bt_handle_event(sl_bt_msg_t *event)
                                   sl_bt_advertiser_connectable_scannable);
       check_status(sc, "sl_bt_advertiser_start");
 
-      LOG_INFO("Booted\r\n");
+      displayInit();
+
+      displayPrintf(DISPLAY_ROW_NAME, "Server");
+
+      //const char* bt_addr = {&ble_data.addr.addr[0], ":", &ble_data.addr.addr[0]};
+      //for(uint8_t i = 0; i < 6; i++)
+
+      displayPrintf(DISPLAY_ROW_BTADDR, "%02x:%02x:%02x:%02x:%02x:%02x", ble_data.addr.addr[0],
+                    ble_data.addr.addr[1],
+                    ble_data.addr.addr[2],
+                    ble_data.addr.addr[3],
+                    ble_data.addr.addr[4],
+                    ble_data.addr.addr[5]);
+
+      displayPrintf(DISPLAY_ROW_ASSIGNMENT, "A6");
+      displayPrintf(DISPLAY_ROW_CONNECTION, "Advertising");
     break;
 
 
     case sl_bt_evt_connection_opened_id:
       // handle open event
+
+      displayPrintf(DISPLAY_ROW_CONNECTION, "Connected");
+
       // Obtain connection handle and update status flag
       ble_data.connectionHandle = event -> data.evt_connection_opened.connection;
       ble_data.connection_open_flag = true;
@@ -118,8 +138,6 @@ void bt_handle_event(sl_bt_msg_t *event)
       // Set connection parameters
       sc = sl_bt_connection_set_parameters(ble_data.connectionHandle, CONNECTION_MIN_MS, CONNECTION_MAX_MS, SLAVE_LATENCY, TIMEOUT, 0, 0xFFFF);
       check_status(sc, "sl_bt_connection_set_parameters");
-
-      LOG_INFO("Connection opened\r\n");
       break;
 
 
@@ -134,6 +152,9 @@ void bt_handle_event(sl_bt_msg_t *event)
                                   sl_bt_advertiser_general_discoverable,
                                   sl_bt_advertiser_connectable_scannable);
       check_status(sc, "sl_bt_advertiser_start");
+
+      displayPrintf(DISPLAY_ROW_TEMPVALUE, "");
+      displayPrintf(DISPLAY_ROW_CONNECTION, "Advertising");
     break;
 
 
@@ -147,6 +168,7 @@ void bt_handle_event(sl_bt_msg_t *event)
 
     case sl_bt_evt_system_external_signal_id:
     break;
+
 
     // Get status for temperature measurement characteristic
     case sl_bt_evt_gatt_server_characteristic_status_id:
@@ -165,6 +187,7 @@ void bt_handle_event(sl_bt_msg_t *event)
               else
               {
                   ble_data.indication_temp_measurement_en = false;
+                  displayPrintf(DISPLAY_ROW_TEMPVALUE, "");
               }
           }
       }
@@ -179,6 +202,13 @@ void bt_handle_event(sl_bt_msg_t *event)
     case sl_bt_evt_gatt_server_indication_timeout_id:
       ble_data.indication_in_flight = false;
     break;
+
+
+    // Check if timer has started
+    case sl_bt_evt_system_soft_timer_id:
+      displayUpdate();
+    break;
+
    } // end - switch
 } // handle_ble_event()
 
@@ -201,8 +231,6 @@ void bt_send_temp(uint32_t temp_in_celsius)
   // Write temperature attribute
   sc = sl_bt_gatt_server_write_attribute_value(gattdb_temperature_measurement, 0, 4, temp_c_ptr);
   check_status(sc, "sl_bt_gatt_server_write_attribute_value");
-
-  LOG_INFO("We got the temp in celsius as %d\r\n", temp_in_celsius);
 
   // Convert temperature into IEEE floating point format
   htm_temperature_flt = UINT32_TO_FLOAT(temp_in_celsius*1000, -3);
