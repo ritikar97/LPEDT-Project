@@ -84,6 +84,14 @@
 // [LEUART0]$
 
 // $[LFXO]
+// LFXO N on PB14
+#define LFXO_N_PORT                              gpioPortB
+#define LFXO_N_PIN                               14
+
+// LFXO P on PB15
+#define LFXO_P_PORT                              gpioPortB
+#define LFXO_P_PIN                               15
+
 // [LFXO]$
 
 // $[MODEM]

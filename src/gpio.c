@@ -29,39 +29,45 @@
 #define EXTCOMINPin  (5)
 #define LCDSELPort   (gpioPortB)
 #define LCDSELPin    (11)
+#define LEDPin       (1)
+#define PBPin        (0)
 
 
 void gpioInit()
 {
 
-	  // Set sensor enable GPIO pin to push-pull mode
-	  GPIO_PinModeSet(MAX30101Port, resetPin, gpioModePushPull, false);
-	  GPIO_PinModeSet(MAX30101Port, MFIOPin, gpioModePushPull, false);
+	  // Set GPS pins to push-pull mode
 	  GPIO_PinModeSet(GPSPort, gpsResetPin, gpioModePushPull, false);
 	  GPIO_PinModeSet(GPSPort, gpsSelPin, gpioModePushPull, false);
 
     // Set EXTCOMIN GPIO pin to push-pull mode
 	  GPIO_PinModeSet(EXTCOMINPort, EXTCOMINPin, gpioModePushPull, false);
     GPIO_PinModeSet(LCDSELPort, LCDSELPin, gpioModePushPull, false);
-    GPIO_PinModeSet(gpioPortA, 1, gpioModePushPull, false);
 
+    // Set PB0 and LED pins
+    GPIO_PinModeSet(EXTCOMINPort, LEDPin, gpioModePushPull, false);
+    GPIO_PinModeSet(EXTCOMINPort, PBPin, gpioModeInputPullFilter, 1);
+    GPIO_ExtIntConfig(EXTCOMINPort, PBPin, PBPin, true, true, true);
 
+    // Get GPS out of reset
 	  gpsReset(GPS_RESET_HIGH);
 
 
 } // gpioInit()
 
 
-void gpioSensorEnable()
+void LCDEnable()
 {
-    // Enable the LCD
+  // Enable the LCD
   GPIO_PinOutSet(LCDSELPort, LCDSELPin);
 }
 
-void gpioSensorDisable()
+void LCDDisable()
 {
     // Disable the temp-humidity sensor
 //    GPIO_PinOutClear(sensorPort, sensorPin);
+  // Disable the LCD
+  GPIO_PinOutClear(LCDSELPort, LCDSELPin);
 }
 
 void gpsReset(uint8_t flag)

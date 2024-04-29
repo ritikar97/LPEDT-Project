@@ -42,6 +42,7 @@ typedef struct {
  bool connection_open_flag;
  bool indication_in_flight;
  bool indication_temp_measurement_en;
+ bool indication_bpm_measurement_en;
 
  // values unique for client
 } ble_data_struct_t;
@@ -81,6 +82,8 @@ void bt_handle_event(sl_bt_msg_t *event);
  * @returns     void
  */
 void bt_send_temp(uint32_t temp_in_celsius);
+
+void bt_send_bpm(uint32_t avg_bpm);
 
 
 #endif /* SRC_BLE_H_ */

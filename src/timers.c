@@ -115,3 +115,44 @@ void timerWaitUs(uint32_t us_wait)
 
 
 }
+
+
+void timerWaitUs_irq(uint32_t us_wait)
+{
+
+  uint32_t delay_ticks, comp1_load_value;
+  LETIMER_TypeDef *letimer;
+  letimer = LETIMER0;
+
+  // Range check
+  if(us_wait < WAIT_LOWER_BOUND || us_wait > WAIT_UPPER_BOUND)
+  {
+      LOG_ERROR("timerWaitUs ERROR: Invalid value for wait\n\r");
+  }
+
+  uint32_t current_count = LETIMER_CounterGet(LETIMER0);
+
+  // Each tick of timer = 1 ms
+  uint32_t ms_wait = (us_wait / 1000);
+
+  // Number of ticks to be waited for required delay
+  delay_ticks = (ms_wait * CMU_ClockFreqGet(cmuClock_LETIMER0))/1000;
+
+  // account for loop condition
+  if(current_count < delay_ticks)
+  {
+      comp1_load_value = current_count + VALUE_TO_LOAD_COMP0 + 1 - delay_ticks;
+  }
+  else
+  {
+      comp1_load_value = current_count - delay_ticks;
+  }
+
+  // Set COMP1 value and ebale interrupt
+  LETIMER_CompareSet(LETIMER0, 1, comp1_load_value);
+  LETIMER_IntClear  (LETIMER0, LETIMER_IFC_COMP1);
+  letimer -> IEN |= LETIMER_IEN_COMP1;
+  //LETIMER_IntEnable (LETIMER0, LETIMER_IEN_COMP1);
+
+  return;
+}

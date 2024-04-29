@@ -4,6 +4,8 @@
     <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
     <property object="I2C0" propertyId="ABModule.selectedRequirement" value="i2c%T%SL_I2CSPM_SENSOR%T%sl_i2cspm_sensor_config.h"/>
     <property object="I2C0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="LEUART0" propertyId="ABModule.selectedRequirement" value="leuart%T%SL_UARTDRV_LEUART_VCOM%T%sl_uartdrv_leuart_vcom_config.h"/>
+    <property object="LEUART0" propertyId="ABPeripheral.included" value="true"/>
     <property object="PA0" propertyId="pin.reserve" value="Reserved"/>
     <property object="PA1" propertyId="pin.reserve" value="Reserved"/>
     <property object="PA4" propertyId="ABModule.selectedRequirement" value="gpio%T%SL_MEMLCD_SPI_CS%T%sl_memlcd_usart_config.h"/>
@@ -30,6 +32,8 @@
     <property object="PORTIO" propertyId="portio.leuart0.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.leuart0.location.rx" value="14"/>
     <property object="PORTIO" propertyId="portio.leuart0.location.tx" value="16"/>
+    <property object="PORTIO" propertyId="portio.lfxo.enable.n" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.lfxo.enable.p" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.pti.enable.dframe" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.pti.enable.dout" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.pti.location.dframe" value="28"/>

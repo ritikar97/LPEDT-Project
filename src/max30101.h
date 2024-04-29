@@ -28,6 +28,7 @@ uint32_t getIR(void);
 bool safeCheck(uint8_t maxTimeToCheck);
 void loop();
 uint16_t check(void);
+uint32_t retBeatAvg();
 
 
 #endif /* SRC_MAX30131_H_ */

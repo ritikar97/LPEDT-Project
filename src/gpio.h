@@ -65,7 +65,7 @@ void gpioInit();
  *
  * @returns     void
  */
-void gpioSensorEnable();
+void LCDEnable();
 
 
 /*
@@ -77,7 +77,7 @@ void gpioSensorEnable();
  *
  * @returns     void
  */
-void gpioSensorDisable();
+void LCDDisable();
 
 void gpsReset(uint8_t flag);
 

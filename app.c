@@ -163,36 +163,17 @@ SL_WEAK void app_init(void)
   initLETIMER0();
   gpioInit();
   i2c_init();
+  initLEUART();
 
+  // LCD Off
+  displayInit();
+  LCDDisable();
 
+  // GPS Off
+  powerGPS(GPS_SEL_LOW);
 
-   timerWaitUs(20000);
-
-//   config_sensor();
-//  bme280_meas();
-
-  // MAX30101 stuff
-  // GPIO_PinOutSet(MAX30101Port, MFIOPin);
-  // GPIO_PinOutClear(MAX30101Port, resetPin);
-  // timerWaitUs(10000);
-  // GPIO_PinOutSet(MAX30101Port, resetPin);
-  // timerWaitUs(1000000);
-//  uint8_t rdData;
-//  LOG_INFO("Reading mode for the first time\r\n");
-   max30101Setup();
-//   initLEUART();
-//  read_mode_reg();
-//  print_sensor_reg();
-//  writeModeReg();
-//  LOG_INFO("Reading mode for the second time\r\n");
-//  max30101_rd_reg(0xFF, &rdData);
-//  read_mode_reg();
-//  print_sensor_reg();
-//  read_fifo();
-//  bme280_meas();
-  powerGPS(GPS_SEL_HIGH);
-
-
+  max30101Setup();
+  
   //Add EM requirement only for EM1 and EM2
 #if(LOWEST_ENERGY_MODE == EM1 || LOWEST_ENERGY_MODE == EM2)
   sl_power_manager_add_em_requirement(LOWEST_ENERGY_MODE);
@@ -200,27 +181,15 @@ SL_WEAK void app_init(void)
 
   NVIC_ClearPendingIRQ(LETIMER0_IRQn);
   NVIC_EnableIRQ(LETIMER0_IRQn);
+  NVIC_ClearPendingIRQ(GPIO_EVEN_IRQn);
+  NVIC_EnableIRQ(GPIO_EVEN_IRQn);
 
 } // app_init()
 
 
 
 
-/*****************************************************************************
- * delayApprox(), private to this file.
- * A value of 3500000 is ~ 1 second. After assignment 1 you can delete or
- * comment out this function. Wait loops are a bad idea in general.
- * We'll discuss how to do this a better way in the next assignment.
- *****************************************************************************/
-/*static void delayApprox(int delay)
-{
-  volatile int i;
 
-  for (i = 0; i < delay; ) {
-      i=i+1;
-  }
-
-}*/ // delayApprox()
 
 
 
@@ -237,12 +206,13 @@ SL_WEAK void app_process_action(void)
   //         We will create/use a scheme that is far more energy efficient in
   //         later assignments.
 
-  loop();
+  // loop();
 
-  if(getGPSStatus())
-    {
-      displayPrintf(DISPLAY_ROW_9, "GPS got!");
-    }
+
+
+
+//
+
   // Reference : IoT lecture 6
   /* uint32_t event;
    *
@@ -271,17 +241,29 @@ SL_WEAK void app_process_action(void)
 void sl_bt_on_event(sl_bt_msg_t *evt)
 {
 
-//  LOG_INFO("Inside sl_bt_on_event\r\n");
-  // Just a trick to hide a compiler warning about unused input parameter evt.
-  //(void) evt;
-  // For A5 onward:
-  // Some events require responses from our application code,
-  // and don’t necessarily advance our state machines.
-  // For A5 uncomment the next 2 function calls
+
   bt_handle_event(evt); // put this code in ble.c/.h
 
+   uint32_t event;
+  uint32_t avgBPM = retBeatAvg;
+
+  event = getNextEvent();
+  lpedtStateMachine(event);
+
+  loop();
+  displayPrintf(DISPLAY_ROW_8, "Avg BPM = %d", avgBPM);
+
   // sequence through states driven by events
-  temperature_state_machine(evt);    // put this code in scheduler.c/.h
+  // temperature_state_machine(evt);    // put this code in scheduler.c/.h
+
+  if(getGPSStatus())
+     {
+       displayPrintf(DISPLAY_ROW_9, "GPS got!");
+     }
+   else
+     {
+       displayPrintf(DISPLAY_ROW_9, "No GPS");
+     }
 
 
 

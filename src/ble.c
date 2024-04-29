@@ -19,6 +19,7 @@
 #include "src/log.h"
 
 #include "src/lcd.h"
+#include "src/gpio.h"
 
 #define ADVERTISING_MIN_MS (400) // 250 ms / 0.625 ms
 #define ADVERTISING_MAX_MS (400) // 250 ms / 0.625 ms
@@ -79,6 +80,7 @@ void bt_handle_event(sl_bt_msg_t *event)
       ble_data.connection_open_flag = false;
       ble_data.indication_in_flight = false;
       ble_data.indication_temp_measurement_en = false;
+      ble_data.indication_bpm_measurement_en = false;
 
       // Call functions required after boot
       // Get unique BT device address
@@ -160,9 +162,9 @@ void bt_handle_event(sl_bt_msg_t *event)
 
     case sl_bt_evt_connection_parameters_id:
       // Obtain parameter information (determined by the client)
-      LOG_INFO("Value of interval = %d us \r\n", 1250 * (event -> data.evt_connection_parameters.interval));
-      LOG_INFO("Value of latency = %d connection intervals \r\n", (event -> data.evt_connection_parameters.latency));
-      LOG_INFO("Value of interval = %d ms \r\n", 10 * (event -> data.evt_connection_parameters.timeout));
+//      LOG_INFO("Value of interval = %d us \r\n", 1250 * (event -> data.evt_connection_parameters.interval));
+//      LOG_INFO("Value of latency = %d connection intervals \r\n", (event -> data.evt_connection_parameters.latency));
+//      LOG_INFO("Value of interval = %d ms \r\n", 10 * (event -> data.evt_connection_parameters.timeout));
     break;
 
 
@@ -189,6 +191,21 @@ void bt_handle_event(sl_bt_msg_t *event)
                   ble_data.indication_temp_measurement_en = false;
                   displayPrintf(DISPLAY_ROW_TEMPVALUE, "");
               }
+          }
+          if(event -> data.evt_gatt_server_characteristic_status.characteristic == gattdb_BPM)
+          {
+            // Check if indications were enabled
+            if((event -> data.evt_gatt_server_characteristic_status.client_config_flags == sl_bt_gatt_server_indication)
+                || event -> data.evt_gatt_server_characteristic_status.client_config_flags == sl_bt_gatt_server_notification_and_indication)
+            {
+                gpioLEDOff();
+                ble_data.indication_bpm_measurement_en = true;
+            }
+            else
+            {
+                ble_data.indication_bpm_measurement_en = false;
+                displayPrintf(DISPLAY_ROW_TEMPVALUE, "");
+            }
           }
       }
       // Check if remote GATT received indication successfully
@@ -260,3 +277,45 @@ void bt_send_temp(uint32_t temp_in_celsius)
   }
 }
 
+
+void bt_send_bpm(uint32_t avg_bpm)
+{
+  sl_status_t sc;
+  uint8_t avg_bpm_val = (uint8_t) avg_bpm;
+  ble_data_struct_t* ble_s = return_ble_data();
+  uint8_t flags = 0;
+  uint8_t bpm_buffer[2];
+  uint8_t* p = bpm_buffer;
+
+
+  // Write temperature attribute
+  sc = sl_bt_gatt_server_write_attribute_value(gattdb_BPM, 0, sizeof(avg_bpm_val), &avg_bpm_val);
+  check_status(sc, "sl_bt_gatt_server_write_attribute_value");
+
+  // Convert temperature into IEEE floating point format
+  // htm_bpm_flt = UINT32_TO_FLOAT(avg_bpm*1000, -3);
+
+  UINT8_TO_BITSTREAM(p, flags);
+  UINT8_TO_BITSTREAM(p, avg_bpm_val);
+
+  // If okay to send indication, send to client
+  if(ble_s -> connection_open_flag && ble_s -> indication_bpm_measurement_en
+      && !(ble_s -> indication_in_flight))
+  {
+      sc = sl_bt_gatt_server_send_indication(
+                          ble_s -> connectionHandle,
+                          gattdb_BPM,
+                          sizeof(bpm_buffer),
+                          &bpm_buffer[0]);
+
+      if(sc != SL_STATUS_OK)
+      {
+          LOG_ERROR("sl_bt_gatt_server_send_indication() returned error with status = 0x%04x\r\n", (unsigned int)sc);
+      }
+      else
+      {
+          ble_s -> indication_in_flight = true;
+      }
+
+  }
+}

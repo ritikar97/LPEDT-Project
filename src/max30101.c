@@ -234,9 +234,9 @@ void loop()
       displayPrintf(DISPLAY_ROW_10, "No finger!");
     }
     else
-      {
-        displayPrintf(DISPLAY_ROW_10, "Avg BPM = %d", beatAvg);
-      }
+    {
+      displayPrintf(DISPLAY_ROW_10, "Avg BPM = %d", beatAvg);
+    }
 
 //      Serial.print(" No finger?");
 
@@ -355,3 +355,7 @@ uint16_t check(void)
   return (numberOfSamples); //Let the world know how much new data we found
 }
 
+uint32_t retBeatAvg()
+{
+  return beatAvg;
+}

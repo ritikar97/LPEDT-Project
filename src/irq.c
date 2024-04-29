@@ -43,3 +43,28 @@ uint32_t millis()
   return milliseconds;
 }
 
+
+void GPIO_EVEN_IRQHandler()
+{
+  //uint32_t irq_source = GPIO_IntGetEnabled();
+
+  unsigned int pinValue;
+  /* Extract flag bits from IF register to determine
+       source of the interrupt */
+  uint32_t irq_source = GPIO_IntGetEnabled();
+
+  // Clear pending interrupts
+  GPIO_IntClear(irq_source);
+
+  pinValue = GPIO_PinInGet(gpioPortA, 0);
+
+  if(pinValue == 0)
+  {
+      schedulerSetPB0PressEvent();
+  }
+  else
+  {
+      schedulerSetPB0ReleaseEvent();
+  }
+
+}

@@ -22,8 +22,8 @@ typedef enum
 {
   eventUF = 1,
   eventCOMP1 = 2,
-  eventI2CTransferDone = 4,
-
+  eventPB0Pressed = 4,
+  eventPB0Released = 8,
 } event_t;
 
 /*
@@ -71,7 +71,7 @@ void schedulerSetCOMP1Event();
  *
  * @returns     event extracted from the data structure
  */
-//uint32_t getNextEvent();
+uint32_t getNextEvent();
 
 
 /*

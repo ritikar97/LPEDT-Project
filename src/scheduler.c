@@ -20,6 +20,8 @@
 #include "src/i2c.h"
 #include "src/ble.h"
 #include "src/bme280.h"
+#include "src/lcd.h"
+#include "src/max30101.h"
 
 #define INCLUDE_LOG_DEBUG 1
 #include "src/log.h"
@@ -47,26 +49,51 @@ void schedulerSetUFEvent()
   // Store events within critical section
   CORE_ENTER_CRITICAL();
 
-  sl_bt_external_signal(eventUF);
+  myEvents |= eventUF;
 
   CORE_EXIT_CRITICAL();
 
 
 }
 
-
-// Scheduler for I2C transfer done
-void schedulerSetI2CTransferDoneEvent()
+void schedulerSetPB0PressEvent()
 {
   CORE_DECLARE_IRQ_STATE;
 
   // Store events within critical section
   CORE_ENTER_CRITICAL();
 
-  sl_bt_external_signal(eventI2CTransferDone);
+  myEvents |= eventPB0Pressed;
 
   CORE_EXIT_CRITICAL();
 }
+
+
+void schedulerSetPB0ReleaseEvent()
+{
+  CORE_DECLARE_IRQ_STATE;
+
+  // Store events within critical section
+  CORE_ENTER_CRITICAL();
+
+  myEvents |= eventPB0Released;
+
+  CORE_EXIT_CRITICAL();
+}
+
+
+// // Scheduler for I2C transfer done
+// void schedulerSetI2CTransferDoneEvent()
+// {
+//   CORE_DECLARE_IRQ_STATE;
+
+//   // Store events within critical section
+//   CORE_ENTER_CRITICAL();
+
+//   sl_bt_external_signal(eventI2CTransferDone);
+
+//   CORE_EXIT_CRITICAL();
+// }
 
 
 // Scheduler for COMP1 flag
@@ -77,113 +104,115 @@ void schedulerSetCOMP1Event()
   // Store events within critical section
   CORE_ENTER_CRITICAL();
 
-  sl_bt_external_signal(eventCOMP1);
+  myEvents |= eventCOMP1;
 
   CORE_EXIT_CRITICAL();
 }
 
+// uint32_t getNextEvent()
+// {
+//   uint32_t theEvent;
+//   uint32_t index = 0;
+//   uint32_t temp = myEvents;
 
-// Sending the next event to caller
-/*uint32_t getNextEvent()
-{
-  uint32_t theEvent = 0;
+//   CORE_DECLARE_IRQ_STATE;
 
-  CORE_DECLARE_IRQ_STATE;
+//   // Extraction of all events, with LSB as highest priority
+//   while(temp != 0)
+//   {
+//      if(temp & 1)
+//        break;
+//      else
+//      {
+//          temp = temp >> 1;
+//          index++;
+//      }
+//   }
 
-  // Enter critical structure to clear the event within the shared structure
-  CORE_ENTER_CRITICAL();
+//   theEvent = (1 << index);
 
-  // Getting events in priority order
-  if(myEvents & eventUF)
-  {
-      theEvent = eventUF;
-  }
-  else if(myEvents & eventCOMP1)
-  {
-      theEvent = eventCOMP1;
-  }
-  else if(myEvents & eventI2CTransferDone)
-  {
-      theEvent = eventI2CTransferDone;
-  }
+//   // Enter critical structure to clear the event within the shared structure
+//   CORE_ENTER_CRITICAL();
+//   myEvents &= ~(theEvent);
+//   CORE_EXIT_CRITICAL();
 
-  // Clear event
-  myEvents ^= theEvent;
-  CORE_EXIT_CRITICAL();
+//   return theEvent;
 
-  return theEvent;
-
-}*/
+// }
 
 
 // Satte machine for temperature
 // IDLE -> COMP1 -> I2C_TRANSFER_DONE ->
 // TEMP_MEAUSRE -> I2C_READ -> IDLE
-void temperature_state_machine(sl_bt_msg_t *event)
+void lpedtStateMachine(sl_bt_msg_t *event)
 {
-  LOG_INFO("Inside the state machine\r\n");
-  State_t currentState;
-  static State_t nextState = STATE_IDLE;
   int32_t temp_in_celsius = 0;
-  ble_data_struct_t* ble_data = return_ble_data();
-
-  currentState = nextState;
+  uint32_t avgBPM = 0;
+  uint8_t itr = 0;
+  // ble_data_struct_t* ble_data = return_ble_data();
 
   // Check event header
-  if(SL_BT_MSG_ID(event -> header) != sl_bt_evt_system_external_signal_id)
-  {
-      return;
-  }
+ if(SL_BT_MSG_ID(event -> header) != sl_bt_evt_system_external_signal_id)
+ {
+     return;
+ }
 
   // Check if connection is open and indications are enabled
-  if(!(ble_data -> connection_open_flag && ble_data -> indication_temp_measurement_en))
-  {
-      return;
+  // if((ble_data -> connection_open_flag && ble_data -> indication_temp_measurement_en))
+  // {
+    // temp_in_celsius = bme280_meas();
+    // displayPrintf(DISPLAY_ROW_TEMPVALUE, "Temp = %0.2f C", (float)temp_in_celsius / 100.0);
+//    bt_send_temp(temp_in_celsius);
+    return;
   }
 
-  uint32_t current_event = event -> data.evt_system_external_signal.extsignals;
+  // if((ble_data -> connection_open_flag && ble_data -> indication_bpm_measurement_en))
+  // {
+  //   avgBPM = retBeatAvg();
+  //   bt_send_bpm(avgBPM);
+  //   return;
+  // }
 
-  // State advancement based on current state
-  switch(currentState)
-  {
+  
 
-    // Enable Si7021 and wait until power on
-    case STATE_IDLE:
-      nextState = STATE_IDLE;
+//  uint32_t current_event = event -> data.evt_system_external_signal.extsignals;
+//
+ // State advancement based on current state
+ switch(currentState)
+ {
 
-      if(current_event == eventUF)
-      {
-          gpioLEDOn();
-          // gpioSensorEnable();
-          timerWaitUs(80000);
-          nextState = STATE_COMP1_EVENT;
-          LOG_INFO("LEAVING STATE_IDLE\r\n");
-      }
+   // Enable Si7021 and wait until power on
+   case STATE_IDLE:
+     nextState = STATE_IDLE;
+
+     if(current_event == PB0)
+     {
+         gpioLEDOn();
+         LCDEnable();
+         temp_in_celsius = bme280_meas();
+         displayPrintf(DISPLAY_ROW_TEMPVALUE, "Temp = %0.2f C", (float)temp_in_celsius / 100.0);
+         // Take GPS measurement too
+         timerWaitUS_irq();
+         LOG_INFO("LEAVING STATE_IDLE\r\n");
+     }
+    break;
+
+   // Send I2C measure temp command
+   case STATE_COMP1_EVENT:
+     nextState = STATE_COMP1_EVENT;
+     if(current_event == eventCOMP1)
+     {
+          itr++;
+          if(itr == 20)
+          {
+         // Shut everything off here - LCD, GPS, LED
+         itr = 0;
+         nextState = STATE_IDLE;
+          }
+     }
      break;
 
-    // Send I2C measure temp command
-    case STATE_COMP1_EVENT:
-      nextState = STATE_COMP1_EVENT;
-      if(current_event == eventCOMP1)
-      {
-          gpioLEDOff();
-        //  sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
-        //  i2c_send_cmd();
-         if(!(ble_data -> connection_open_flag && ble_data -> indication_temp_measurement_en))
-         {
-             nextState = STATE_IDLE;
-         }
-         else
-         {
-            temp_in_celsius = bme280_meas();
-            bt_send_temp(temp_in_celsius);
-         }
-          nextState = STATE_IDLE;
-         LOG_INFO("LEAVING STATE_COMP1_EVENT\r\n");
-      }
-      break;    
-
-    default:
-      break;
-  }
+   default:
+     break;
+ }
 }

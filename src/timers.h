@@ -38,5 +38,17 @@ void initLETIMER0();
  */
 void timerWaitUs(uint32_t us_wait);
 
+/*
+ * @func        timerWaitUs_irq()
+ *
+ * @brief       Wait routine for timer (Non-blocking)
+ *
+ * @parameters  us_wait - number of microseconds to wait
+ *
+ * @returns     void
+ */
+void timerWaitUs_irq(uint32_t us_wait);
+
+
 
 #endif /* SRC_TIMERS_H_ */
