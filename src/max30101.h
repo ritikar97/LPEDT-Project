@@ -19,13 +19,8 @@
   } sense_struct; //This is our circular buffer of readings from the sensor
 
 
-void max30101Config();
-void config_sensor();
-void read_fifo();
-//void read_mode_reg();
-void print_sensor_reg();
-void max30101ReadReg(uint8_t reg, uint8_t* rdData);
-void writeModeReg();
+void max30101WriteReg(uint8_t regAddr, uint8_t data);
+void max30101ReadFifo(uint8_t* rdData, uint8_t len);
 void max30101ReadReg(uint8_t reg, uint8_t* rdData);
 void max30101Setup();
 void rdModifyWrReg(uint8_t reg, uint8_t mask, uint8_t data);
