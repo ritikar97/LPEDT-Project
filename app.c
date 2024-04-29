@@ -164,9 +164,9 @@ SL_WEAK void app_init(void)
 
 
 
-   timerWaitUs_irq(20000);
+   timerWaitUs(20000);
 
-   config_sensor();
+//   config_sensor();
 //  bme280_meas();
 
   // MAX30101 stuff
@@ -177,7 +177,7 @@ SL_WEAK void app_init(void)
   // timerWaitUs(1000000);
 //  uint8_t rdData;
 //  LOG_INFO("Reading mode for the first time\r\n");
-    max30101Config();
+   max30101Setup();
 //  read_mode_reg();
 //  print_sensor_reg();
 //  writeModeReg();
@@ -234,8 +234,10 @@ SL_WEAK void app_process_action(void)
   //         We will create/use a scheme that is far more energy efficient in
   //         later assignments.
 
+  loop();
   // Reference : IoT lecture 6
   /* uint32_t event;
+   *
 
   event = getNextEvent();
 
@@ -272,6 +274,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
   // sequence through states driven by events
   temperature_state_machine(evt);    // put this code in scheduler.c/.h
+
 
 
 } // sl_bt_on_event()

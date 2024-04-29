@@ -28,27 +28,15 @@ void initLETIMER0();
 
 
 /*
- * @func        timerWaitUs_polled()
+ * @func        initLETIMER0()
  *
- * @brief       Wait routine for timer (Blocking)
+ * @brief       Intialization routine for LETIMER0
  *
- * @parameters  us_wait - number of microseconds to wait
- *
- * @returns     void
- */
-void timerWaitUs_polled(uint32_t us_wait);
-
-
-/*
- * @func        timerWaitUs_irq()
- *
- * @brief       Wait routine for timer (Non-blocking)
- *
- * @parameters  us_wait - number of microseconds to wait
+ * @parameters  none
  *
  * @returns     void
  */
-void timerWaitUs_irq(uint32_t us_wait);
+void timerWaitUs(uint32_t us_wait);
 
 
 #endif /* SRC_TIMERS_H_ */

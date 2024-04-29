@@ -155,7 +155,7 @@ void temperature_state_machine(sl_bt_msg_t *event)
       {
           gpioLEDOn();
           // gpioSensorEnable();
-          timerWaitUs_irq(80000);
+          timerWaitUs(80000);
           nextState = STATE_COMP1_EVENT;
           LOG_INFO("LEAVING STATE_IDLE\r\n");
       }

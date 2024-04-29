@@ -25,7 +25,7 @@
  *
  * @returns     uint32_t - milliseconds elapsed
  */
-uint32_t letimerMilliseconds();
+uint32_t millis();
 
 
 #endif /* SRC_IRQ_H_ */
