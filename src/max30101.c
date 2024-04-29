@@ -74,10 +74,7 @@ static const uint8_t SLOT_RED_LED =       0x01;
 static const uint8_t SLOT_IR_LED =        0x02;
 static const uint8_t SLOT_GREEN_LED =       0x03;
 
-// MODE - 0x02 (Heart rate sensing)
-#define MODE_2 (0x02) // SHDN - 0, RESET - 0, RESV - 000, MODE - 010
 
-uint8_t sensor_reg_data;
 sense_struct sense = {.head = 0, .tail = STORAGE_SIZE-1};
 const uint8_t RATE_SIZE = 4; //Increase this for more averaging. 4 is good.
 uint8_t rates[4] = {0, 0, 0, 0}; //Array of heart rates

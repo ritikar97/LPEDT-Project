@@ -49,6 +49,8 @@
 #include "src/max30101.h"
 #include "src/bme280.h"
 #include "sl_status.h"             // for sl_status_print()
+#include "src/gps.h"
+
 
 #include "src/ble_device_type.h"
 #include "src/gpio.h"
@@ -178,6 +180,7 @@ SL_WEAK void app_init(void)
 //  uint8_t rdData;
 //  LOG_INFO("Reading mode for the first time\r\n");
    max30101Setup();
+//   initLEUART();
 //  read_mode_reg();
 //  print_sensor_reg();
 //  writeModeReg();
@@ -235,6 +238,11 @@ SL_WEAK void app_process_action(void)
   //         later assignments.
 
   loop();
+
+  if(getGPSStatus())
+    {
+      displayPrintf(DISPLAY_ROW_9, "GPS got!");
+    }
   // Reference : IoT lecture 6
   /* uint32_t event;
    *

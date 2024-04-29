@@ -71,6 +71,16 @@
 // [LETIMER0]$
 
 // $[LEUART0]
+// LEUART0 RX on PC10
+#define LEUART0_RX_PORT                          gpioPortC
+#define LEUART0_RX_PIN                           10
+#define LEUART0_RX_LOC                           14
+
+// LEUART0 TX on PC11
+#define LEUART0_TX_PORT                          gpioPortC
+#define LEUART0_TX_PIN                           11
+#define LEUART0_TX_LOC                           16
+
 // [LEUART0]$
 
 // $[LFXO]
