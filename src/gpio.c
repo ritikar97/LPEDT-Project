@@ -20,7 +20,7 @@
  */
 
 
-#include "em_gpio.h"
+
 #include "gpio.h"
 
 

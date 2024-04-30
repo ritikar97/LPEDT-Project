@@ -16,6 +16,8 @@
 #include "src/timers.h"
 #include "app.h"
 #include "em_cmu.h"
+#include "src/gpio.h"
+#include "em_rtcc.h"
 
 
 #define INCLUDE_LOG_DEBUG 1
@@ -136,7 +138,7 @@ void timerWaitUs_irq(uint32_t us_wait)
   uint32_t ms_wait = (us_wait / 1000);
 
   // Number of ticks to be waited for required delay
-  delay_ticks = (ms_wait * CMU_ClockFreqGet(cmuClock_LETIMER0))/1000;
+  delay_ticks = (ms_wait);// * CMU_ClockFreqGet(cmuClock_LETIMER0))/1000;
 
   // account for loop condition
   if(current_count < delay_ticks)
@@ -148,6 +150,7 @@ void timerWaitUs_irq(uint32_t us_wait)
       comp1_load_value = current_count - delay_ticks;
   }
 
+   
   // Set COMP1 value and ebale interrupt
   LETIMER_CompareSet(LETIMER0, 1, comp1_load_value);
   LETIMER_IntClear  (LETIMER0, LETIMER_IFC_COMP1);
@@ -156,3 +159,23 @@ void timerWaitUs_irq(uint32_t us_wait)
 
   return;
 }
+
+// Initialize Timer
+
+// Initialize RTCC for millisecond counting
+// void initMillis() {
+//     // Enable clock for RTCC
+//     CMU_ClockEnable(cmuClock_RTCC, true);
+
+//     // Initialize RTCC
+//     RTCC_Init_TypeDef rtccInit = RTCC_INIT_DEFAULT;
+//     rtccInit.presc = rtccCntPresc_1;
+//     RTCC_Init(&rtccInit);
+
+//     // Enable RTCC overflow interrupt
+//     RTCC_IntEnable(RTCC_IF_OF);
+//     NVIC_EnableIRQ(RTCC_IRQn);
+
+//     // Start RTCC
+//     RTCC_Enable(true);
+// }

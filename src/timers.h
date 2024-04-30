@@ -49,6 +49,6 @@ void timerWaitUs(uint32_t us_wait);
  */
 void timerWaitUs_irq(uint32_t us_wait);
 
-
+void initMillis();
 
 #endif /* SRC_TIMERS_H_ */

@@ -21,9 +21,9 @@
 typedef enum
 {
   eventUF = 1,
-  eventCOMP1 = 2,
-  eventPB0Pressed = 4,
-  eventPB0Released = 8,
+  eventPB0Pressed = 2,
+  eventPB0Released = 4,
+  eventCOMP1 = 8
 } event_t;
 
 /*
@@ -71,7 +71,7 @@ void schedulerSetCOMP1Event();
  *
  * @returns     event extracted from the data structure
  */
-uint32_t getNextEvent();
+// uint32_t getNextEvent();
 
 
 /*
@@ -83,7 +83,10 @@ uint32_t getNextEvent();
  *
  * @returns     void
  */
-void temperature_state_machine(sl_bt_msg_t *event);
+void lpedtStateMachine(sl_bt_msg_t *event);
+
+void schedulerSetPB0PressEvent();
+void schedulerSetPB0ReleasesEvent();
 
 
 #endif /* SRC_SCHEDULER_H_ */

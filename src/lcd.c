@@ -257,7 +257,7 @@ void displayInit()
     //           the time now for the LCD to function properly.
     //           Create that function to gpio.c/.h Then add that function call here.
     //
-    LCDEnable(); // we need SENSOR_ENABLE=1 which is tied to DISP_ENABLE
+    // LCDEnable(); // we need SENSOR_ENABLE=1 which is tied to DISP_ENABLE
     //                     // for the LCD, on all the time now
 
 

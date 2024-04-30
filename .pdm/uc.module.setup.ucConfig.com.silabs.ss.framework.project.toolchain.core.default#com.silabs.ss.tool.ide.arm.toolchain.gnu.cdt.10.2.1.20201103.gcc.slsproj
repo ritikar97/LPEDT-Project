@@ -11,16 +11,13 @@
     <file name="sl_memlcd_usart_config.h" generated="true" linked="false"/>
     <file name="sl_device_init_dcdc_config.h" generated="true" linked="false"/>
     <file name="sl_bluetooth_config.h" generated="true" linked="false"/>
-    <file name="uartdrv_config.h" generated="true" linked="false"/>
     <file name="sl_board_control_config.h" generated="true" linked="false"/>
     <file name="app_log_config.h" generated="true" linked="false"/>
     <file name="sl_bluetooth_connection_config.h" generated="true" linked="false"/>
-    <file name="sl_uartdrv_leuart_vcom_config.h" generated="true" linked="false"/>
     <file name="sl_i2cspm_sensor_config.h" generated="true" linked="false"/>
     <file name="app_assert_config.h" generated="true" linked="false"/>
     <file name="sl_sleeptimer_config.h" generated="true" linked="false"/>
     <file name="sl_device_init_lfxo_config.h" generated="true" linked="false"/>
-    <file name="dmadrv_config.h" generated="true" linked="false"/>
     <file name="sl_rail_util_pti_config.h" generated="true" linked="false"/>
     <file name="sl_power_manager_config.h" generated="true" linked="false"/>
     <file name="sl_bluetooth_advertiser_config.h" generated="true" linked="false"/>

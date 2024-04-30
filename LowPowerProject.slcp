@@ -38,8 +38,6 @@ component:
 - {id: bluetooth_feature_advertiser}
 - instance: [vcom]
   id: iostream_usart
-- instance: [vcom]
-  id: uartdrv_leuart
 - {id: bluetooth_feature_system}
 - {id: bluetooth_feature_scanner}
 - {id: emlib_letimer}

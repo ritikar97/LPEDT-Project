@@ -116,7 +116,7 @@ void LETIMER0_IRQHandler(void);     /**< LETIMER0 IRQ Handler */
 void AGC_IRQHandler(void);          /**< AGC IRQ Handler */
 void PROTIMER_IRQHandler(void);     /**< PROTIMER IRQ Handler */
 void PRORTC_IRQHandler(void);       /**< PRORTC IRQ Handler */
-void RTCC_IRQHandler(void);         /**< RTCC IRQ Handler */
+void My_RTCC_IRQHandler(void);         /**< RTCC IRQ Handler */
 void SYNTH_IRQHandler(void);        /**< SYNTH IRQ Handler */
 void CRYOTIMER_IRQHandler(void);    /**< CRYOTIMER IRQ Handler */
 void RFSENSE_IRQHandler(void);      /**< RFSENSE IRQ Handler */

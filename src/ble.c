@@ -105,7 +105,7 @@ void bt_handle_event(sl_bt_msg_t *event)
                                   sl_bt_advertiser_connectable_scannable);
       check_status(sc, "sl_bt_advertiser_start");
 
-      displayInit();
+      // displayInit();
 
       displayPrintf(DISPLAY_ROW_NAME, "Server");
 
@@ -119,7 +119,7 @@ void bt_handle_event(sl_bt_msg_t *event)
                     ble_data.addr.addr[4],
                     ble_data.addr.addr[5]);
 
-      displayPrintf(DISPLAY_ROW_ASSIGNMENT, "A6");
+      // displayPrintf(DISPLAY_ROW_ASSIGNMENT, "A6");
       displayPrintf(DISPLAY_ROW_CONNECTION, "Advertising");
     break;
 
@@ -198,7 +198,7 @@ void bt_handle_event(sl_bt_msg_t *event)
             if((event -> data.evt_gatt_server_characteristic_status.client_config_flags == sl_bt_gatt_server_indication)
                 || event -> data.evt_gatt_server_characteristic_status.client_config_flags == sl_bt_gatt_server_notification_and_indication)
             {
-                gpioLEDOff();
+                // gpioLEDOff();
                 ble_data.indication_bpm_measurement_en = true;
             }
             else

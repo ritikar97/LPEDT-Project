@@ -164,10 +164,11 @@ SL_WEAK void app_init(void)
   gpioInit();
   i2c_init();
   initLEUART();
+  // initMillis();
 
   // LCD Off
   displayInit();
-  LCDDisable();
+  // LCDDisable();
 
   // GPS Off
   powerGPS(GPS_SEL_LOW);
@@ -206,7 +207,8 @@ SL_WEAK void app_process_action(void)
   //         We will create/use a scheme that is far more energy efficient in
   //         later assignments.
 
-  // loop();
+// LCDEnable();
+//   loop();
 
 
 
@@ -244,28 +246,21 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
   bt_handle_event(evt); // put this code in ble.c/.h
 
-   uint32_t event;
-  uint32_t avgBPM = retBeatAvg;
+  uint32_t avgBPM = retBeatAvg();
 
-  event = getNextEvent();
-  lpedtStateMachine(event);
+  lpedtStateMachine(evt);
 
   loop();
-  displayPrintf(DISPLAY_ROW_8, "Avg BPM = %d", avgBPM);
-
-  // sequence through states driven by events
-  // temperature_state_machine(evt);    // put this code in scheduler.c/.h
-
-  if(getGPSStatus())
-     {
-       displayPrintf(DISPLAY_ROW_9, "GPS got!");
-     }
-   else
-     {
-       displayPrintf(DISPLAY_ROW_9, "No GPS");
-     }
 
 
+  // if(getGPSStatus())
+  //    {
+  //      displayPrintf(DISPLAY_ROW_9, "GPS got!");
+  //    }
+  //  else
+  //    {
+  //      displayPrintf(DISPLAY_ROW_9, "No GPS");
+  //    }
 
 } // sl_bt_on_event()
 

@@ -14,7 +14,7 @@
 #ifndef SRC_IRQ_H_
 #define SRC_IRQ_H_
 
-#include <stdint.h>
+// #include <stdint.h>
 
 /*
  * @func        letimerMilliseconds()

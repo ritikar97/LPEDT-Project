@@ -15,6 +15,10 @@
 #include "src/gpio.h"
 #include "em_letimer.h"
 #include "src/scheduler.h"
+#include "em_i2c.h"
+#include "src/irq.h"
+#include "em_gpio.h"
+// #include "em_rtcc.h"
 
 volatile uint32_t milliseconds = 0;
 
@@ -35,6 +39,14 @@ void LETIMER0_IRQHandler()
        milliseconds++;
 //       schedulerSetReadTempEvent();
    }
+
+   // Call COMP1 scheduler and siable COMP1 IRQ
+      if(irq_source & LETIMER_IF_COMP1)
+      {
+         gpioLEDOff();
+          schedulerSetCOMP1Event();
+          LETIMER_IntDisable(LETIMER0, LETIMER_IEN_COMP1);
+      }
 }
 
 // Function to return number of milliseconds elapsed
@@ -68,3 +80,11 @@ void GPIO_EVEN_IRQHandler()
   }
 
 }
+
+// void My_RTCC_IRQHandler(void) {
+//     // Clear interrupt flag
+//     RTCC_IntClear(RTCC_IF_OF);
+
+//     // Increment milliseconds
+//     milliseconds++;
+// }

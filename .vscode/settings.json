@@ -1,5 +1,9 @@
 {
     "files.associations": {
-        "ble_device_type.h": "c"
+        "ble_device_type.h": "c",
+        "irq.h": "c",
+        "gpio.h": "c",
+        "scheduler.h": "c",
+        "em_letimer.h": "c"
     }
 }
