@@ -22,6 +22,7 @@
 
 
 #include "gpio.h"
+#include "src/lcd.h"
 
 
 // LCD EXTCOMIN pin is PA0
@@ -60,6 +61,7 @@ void LCDEnable()
 {
   // Enable the LCD
   GPIO_PinOutSet(LCDSELPort, LCDSELPin);
+  displayPrintf(DISPLAY_ROW_0, "Low Power - Team 2");
 }
 
 void LCDDisable()

@@ -114,9 +114,9 @@ void lpedtStateMachine(sl_bt_msg_t *event)
   State_t currentState;
   static State_t nextState = STATE_IDLE;
   int32_t temp_in_celsius = 0;
-  // uint32_t avgBPM = 0;
+  uint32_t avgBPM = 0;
  
-  // ble_data_struct_t* ble_data = return_ble_data();
+  ble_data_struct_t* ble_data = return_ble_data();
 
   currentState = nextState;
 
@@ -156,7 +156,7 @@ void lpedtStateMachine(sl_bt_msg_t *event)
     gpioLEDOff();
   }
 
-  displayPrintf(DISPLAY_ROW_CONNECTION, "System state = %d", systemState);
+  // displayPrintf(DISPLAY_ROW_CONNECTION, "System state = %d", systemState);
 
   if(systemState)
   {
@@ -164,7 +164,16 @@ void lpedtStateMachine(sl_bt_msg_t *event)
     LCDEnable();
     powerGPS(GPS_SEL_HIGH);
     temp_in_celsius = bme280_meas();
-    displayPrintf(DISPLAY_ROW_TEMPVALUE, "Temp = %0.2f C", (float)temp_in_celsius / 100.0);
+    displayPrintf(DISPLAY_ROW_2, "Temp = %0.2f C", (float)temp_in_celsius / 100.0);
+    if((ble_data -> connection_open_flag && ble_data -> indication_temp_measurement_en))
+    {
+      bt_send_temp(temp_in_celsius);
+    }
+    if((ble_data -> connection_open_flag && ble_data -> indication_bpm_measurement_en))
+    {
+      avgBPM = retBeatAvg();
+      bt_send_bpm(avgBPM);
+    }
   }
   else
   {

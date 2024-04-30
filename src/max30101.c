@@ -231,11 +231,11 @@ void loop()
 
     if (irValue < 50000)
     {
-      displayPrintf(DISPLAY_ROW_10, "No finger!");
+      displayPrintf(DISPLAY_ROW_3, "No finger!");
     }
     else
     {
-      displayPrintf(DISPLAY_ROW_10, "Avg BPM = %d", beatAvg);
+      displayPrintf(DISPLAY_ROW_3, "Avg BPM = %d", beatAvg);
     }
 
 //      Serial.print(" No finger?");

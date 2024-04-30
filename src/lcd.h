@@ -44,19 +44,19 @@
  * assignment requirements. See assignment text for details.
  */
 enum display_row {
-	DISPLAY_ROW_NAME,          // 0
-	DISPLAY_ROW_BTADDR,        // 1
-	DISPLAY_ROW_BTADDR2,       // 2
-	DISPLAY_ROW_CLIENTADDR,    // 3
-	DISPLAY_ROW_CONNECTION,    // 4
-	DISPLAY_ROW_PASSKEY,       // 5
-	DISPLAY_ROW_ACTION,        // 6
-	DISPLAY_ROW_TEMPVALUE,     // 7
+	DISPLAY_ROW_0,          // 0
+	DISPLAY_ROW_1,        // 1
+	DISPLAY_ROW_2,       // 2
+	DISPLAY_ROW_3,    // 3
+	DISPLAY_ROW_4,    // 4
+	DISPLAY_ROW_5,       // 5
+	DISPLAY_ROW_6,        // 6
+	DISPLAY_ROW_7,     // 7
 	DISPLAY_ROW_8,             // 8
 	DISPLAY_ROW_9,             // 9
 	DISPLAY_ROW_10,            // 10
 	DISPLAY_ROW_11,            // 11
-	DISPLAY_ROW_ASSIGNMENT,    // 12
+	DISPLAY_ROW_12,    // 12
 	DISPLAY_NUMBER_OF_ROWS     // 13
 };
 

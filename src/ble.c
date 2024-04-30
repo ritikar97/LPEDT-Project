@@ -107,27 +107,25 @@ void bt_handle_event(sl_bt_msg_t *event)
 
       // displayInit();
 
-      displayPrintf(DISPLAY_ROW_NAME, "Server");
-
       //const char* bt_addr = {&ble_data.addr.addr[0], ":", &ble_data.addr.addr[0]};
       //for(uint8_t i = 0; i < 6; i++)
 
-      displayPrintf(DISPLAY_ROW_BTADDR, "%02x:%02x:%02x:%02x:%02x:%02x", ble_data.addr.addr[0],
-                    ble_data.addr.addr[1],
-                    ble_data.addr.addr[2],
-                    ble_data.addr.addr[3],
-                    ble_data.addr.addr[4],
-                    ble_data.addr.addr[5]);
+      // displayPrintf(DISPLAY_ROW_BTADDR, "%02x:%02x:%02x:%02x:%02x:%02x", ble_data.addr.addr[0],
+      //               ble_data.addr.addr[1],
+      //               ble_data.addr.addr[2],
+      //               ble_data.addr.addr[3],
+      //               ble_data.addr.addr[4],
+      //               ble_data.addr.addr[5]);
 
       // displayPrintf(DISPLAY_ROW_ASSIGNMENT, "A6");
-      displayPrintf(DISPLAY_ROW_CONNECTION, "Advertising");
+      // displayPrintf(DISPLAY_ROW_CONNECTION, "Advertising");
     break;
 
 
     case sl_bt_evt_connection_opened_id:
       // handle open event
 
-      displayPrintf(DISPLAY_ROW_CONNECTION, "Connected");
+      displayPrintf(DISPLAY_ROW_1, "Connected Over Bluetooth");
 
       // Obtain connection handle and update status flag
       ble_data.connectionHandle = event -> data.evt_connection_opened.connection;
@@ -155,8 +153,8 @@ void bt_handle_event(sl_bt_msg_t *event)
                                   sl_bt_advertiser_connectable_scannable);
       check_status(sc, "sl_bt_advertiser_start");
 
-      displayPrintf(DISPLAY_ROW_TEMPVALUE, "");
-      displayPrintf(DISPLAY_ROW_CONNECTION, "Advertising");
+      // displayPrintf(DISPLAY_ROW_TEMPVALUE, "");
+      // displayPrintf(DISPLAY_ROW_CONNECTION, "Advertising");
     break;
 
 
@@ -189,7 +187,6 @@ void bt_handle_event(sl_bt_msg_t *event)
               else
               {
                   ble_data.indication_temp_measurement_en = false;
-                  displayPrintf(DISPLAY_ROW_TEMPVALUE, "");
               }
           }
           if(event -> data.evt_gatt_server_characteristic_status.characteristic == gattdb_BPM)
@@ -204,7 +201,6 @@ void bt_handle_event(sl_bt_msg_t *event)
             else
             {
                 ble_data.indication_bpm_measurement_en = false;
-                displayPrintf(DISPLAY_ROW_TEMPVALUE, "");
             }
           }
       }

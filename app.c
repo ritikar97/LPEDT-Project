@@ -201,29 +201,7 @@ SL_WEAK void app_init(void)
  *****************************************************************************/
 SL_WEAK void app_process_action(void)
 {
-  // Put your application code here for A1 to A4.
-  // This is called repeatedly from the main while(1) loop
-  // Notice: This function is not passed or has access to Bluetooth stack events.
-  //         We will create/use a scheme that is far more energy efficient in
-  //         later assignments.
-
-// LCDEnable();
-//   loop();
-
-
-
-
-//
-
-  // Reference : IoT lecture 6
-  /* uint32_t event;
-   *
-
-  event = getNextEvent();
-
-  temperature_state_machine(event); */
-
-
+  loop();
 } // app_process_action()
 
 
@@ -250,17 +228,17 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
   lpedtStateMachine(evt);
 
-  loop();
+  // loop();
 
 
-  // if(getGPSStatus())
-  //    {
-  //      displayPrintf(DISPLAY_ROW_9, "GPS got!");
-  //    }
-  //  else
-  //    {
-  //      displayPrintf(DISPLAY_ROW_9, "No GPS");
-  //    }
+  if(getGPSStatus())
+     {
+       displayPrintf(DISPLAY_ROW_9, "GPS got!");
+     }
+   else
+     {
+       displayPrintf(DISPLAY_ROW_9, "No GPS");
+     }
 
 } // sl_bt_on_event()
 
