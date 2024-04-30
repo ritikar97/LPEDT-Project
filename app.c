@@ -230,14 +230,37 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
 
   // loop();
 
+  // displayPrintf(DISPLAY_ROW_8, "IRQ!");
+  //       char receivedChar = LEUART_Rx(LEUART0);
+
+  //       // Check for the start of a GNGGA sentence
+  //       if (receivedChar == '$')
+  //       {
+  //           leuartIndex = 0;
+  //           leuartBuffer[leuartIndex++] = receivedChar;
+  //       }
+  //       else if (leuartIndex > 0 && receivedChar != '\n' && leuartIndex < LEUART_BUFSIZE - 1)
+  //       {
+  //           leuartBuffer[leuartIndex++] = receivedChar;
+
+  //           // Check if the complete GNGGA sentence is received
+  //           if (strstr(leuartBuffer, "GNGGA") != NULL && receivedChar == '\n')
+  //           {
+  //               leuartBuffer[leuartIndex] = '\0'; // Null-terminate the string
+  //               gnggaReceived = true; // Flag that a GNGGA sentence is received
+  //           }
+  //       }
+
 
   if(getGPSStatus())
      {
-       displayPrintf(DISPLAY_ROW_9, "GPS got!");
+       printGNGGAData();
+       displayPrintf(DISPLAY_ROW_9, "Getting GPS Data!");
+       setPrintGPS(false);
      }
    else
      {
-       displayPrintf(DISPLAY_ROW_9, "No GPS");
+       displayPrintf(DISPLAY_ROW_9, "No GPS Data");
      }
 
 } // sl_bt_on_event()

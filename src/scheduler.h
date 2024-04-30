@@ -87,6 +87,10 @@ void lpedtStateMachine(sl_bt_msg_t *event);
 
 void schedulerSetPB0PressEvent();
 void schedulerSetPB0ReleasesEvent();
+int32_t getTempInCelsius();
+bool getSystemState();
+bool getPrintGPS();
+void setPrintGPS(bool flag);
 
 
 #endif /* SRC_SCHEDULER_H_ */

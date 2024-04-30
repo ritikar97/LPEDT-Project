@@ -17,6 +17,7 @@
 
 //#define INCLUDE_LOG_DEBUG 1
 #include "src/log.h"
+#include "src/max30101.h"
 
 #include "src/lcd.h"
 #include "src/gpio.h"
@@ -183,6 +184,11 @@ void bt_handle_event(sl_bt_msg_t *event)
                   || event -> data.evt_gatt_server_characteristic_status.client_config_flags == sl_bt_gatt_server_notification_and_indication)
               {
                   ble_data.indication_temp_measurement_en = true;
+                  if(getSystemState())
+                  {
+                    int32_t temp_in_celsius = getTempInCelsius();
+                    bt_send_temp(temp_in_celsius);
+                  }
               }
               else
               {
@@ -197,6 +203,11 @@ void bt_handle_event(sl_bt_msg_t *event)
             {
                 // gpioLEDOff();
                 ble_data.indication_bpm_measurement_en = true;
+                if(getSystemState())
+                {
+                  uint32_t avgBPM = retBeatAvg();
+                  bt_send_bpm(avgBPM);
+                }
             }
             else
             {

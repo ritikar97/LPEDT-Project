@@ -30,8 +30,8 @@
     <property object="PORTIO" propertyId="portio.i2c0.location.sda" value="22"/>
     <property object="PORTIO" propertyId="portio.leuart0.enable.rx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.leuart0.enable.tx" value="Enabled"/>
-    <property object="PORTIO" propertyId="portio.leuart0.location.rx" value="14"/>
-    <property object="PORTIO" propertyId="portio.leuart0.location.tx" value="16"/>
+    <property object="PORTIO" propertyId="portio.leuart0.location.rx" value="15"/>
+    <property object="PORTIO" propertyId="portio.leuart0.location.tx" value="15"/>
     <property object="PORTIO" propertyId="portio.lfxo.enable.n" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.lfxo.enable.p" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.pti.enable.dframe" value="Enabled"/>

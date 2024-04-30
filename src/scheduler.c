@@ -22,6 +22,7 @@
 #include "src/bme280.h"
 #include "src/lcd.h"
 #include "src/max30101.h"
+#include "src/gps.h"
 
 #define INCLUDE_LOG_DEBUG 1
 #include "src/log.h"
@@ -30,6 +31,8 @@
 
  uint8_t itr = 0;
  bool systemState = false;
+ int32_t temp_in_celsius = 0;
+ bool printGPS = 0;
 
 // Data structure to store the events
 // uint32_t myEvents = 0;
@@ -113,7 +116,7 @@ void lpedtStateMachine(sl_bt_msg_t *event)
 {
   State_t currentState;
   static State_t nextState = STATE_IDLE;
-  int32_t temp_in_celsius = 0;
+  
   uint32_t avgBPM = 0;
  
   ble_data_struct_t* ble_data = return_ble_data();
@@ -165,15 +168,16 @@ void lpedtStateMachine(sl_bt_msg_t *event)
     powerGPS(GPS_SEL_HIGH);
     temp_in_celsius = bme280_meas();
     displayPrintf(DISPLAY_ROW_2, "Temp = %0.2f C", (float)temp_in_celsius / 100.0);
-    if((ble_data -> connection_open_flag && ble_data -> indication_temp_measurement_en))
-    {
-      bt_send_temp(temp_in_celsius);
-    }
-    if((ble_data -> connection_open_flag && ble_data -> indication_bpm_measurement_en))
-    {
-      avgBPM = retBeatAvg();
-      bt_send_bpm(avgBPM);
-    }
+    printGPS = true;
+    // if((ble_data -> connection_open_flag && ble_data -> indication_temp_measurement_en))
+    // {
+    //   bt_send_temp(temp_in_celsius);
+    // }
+    // if((ble_data -> connection_open_flag && ble_data -> indication_bpm_measurement_en))
+    // {
+    //   avgBPM = retBeatAvg();
+    //   bt_send_bpm(avgBPM);
+    // }
   }
   else
   {
@@ -249,4 +253,25 @@ void lpedtStateMachine(sl_bt_msg_t *event)
 //    default:
 //      break;
 //  }
+}
+
+
+int32_t getTempInCelsius()
+{
+  return temp_in_celsius;
+}
+
+bool getSystemState()
+{
+  return systemState;
+}
+
+bool getPrintGPS()
+{
+  return printGPS;
+}
+
+void setPrintGPS(bool flag)
+{
+  printGPS = flag;
 }

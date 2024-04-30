@@ -52,6 +52,8 @@ void initLEUART(void);
 
 bool getGPSStatus();
 
+void printGNGGAData();
+
 
 
 #endif /* GPS_H_ */
