@@ -164,41 +164,60 @@
   <service advertise="true" name="GPS Data" requirement="mandatory" sourceId="" type="primary" uuid="00000001-38c8-433e-87ec-652a2d136290">
     <informativeText/>
     
-    <!--GPS Latitude -->
-    <characteristic const="false" id="Lat" name="GPS Latitude " sourceId="" uuid="00000001-38c8-433e-87ec-652a2d136290">
+    <!--GPS Latitude-->
+    <characteristic const="false" id="Lat" name="GPS Latitude" sourceId="" uuid="2A1C">
       <informativeText/>
-      <value length="6" type="hex" variable_length="false">00</value>
+      <value length="17" type="hex" variable_length="false"/>
       <properties>
         <indicate authenticated="false" bonded="false" encrypted="false"/>
       </properties>
       
       <!--Client Characteristic Configuration-->
-      <descriptor const="false" discoverable="true" id="client_characteristic_configuration_6" name="Client Characteristic Configuration" sourceId="org.bluetooth.descriptor.gatt.client_characteristic_configuration" uuid="2902">
+      <descriptor const="false" discoverable="true" id="client_characteristic_configuration_8" name="Client Characteristic Configuration" sourceId="org.bluetooth.descriptor.gatt.client_characteristic_configuration" uuid="2902">
         <properties>
           <read authenticated="false" bonded="false" encrypted="false"/>
           <write authenticated="false" bonded="false" encrypted="false"/>
         </properties>
-        <value length="1" type="hex" variable_length="false">00</value>
-        <informativeText/>
+        <value length="2" type="hex" variable_length="false"/>
+        <informativeText>Abstract:  The Client Characteristic Configuration descriptor defines how the characteristic may be configured by a specific client.  Summary:  This descriptor shall be persistent across connections for bonded devices.         The Client Characteristic Configuration descriptor is unique for each client. A client may read and write this descriptor to determine and set the configuration for that client.         Authentication and authorization may be required by the server to write this descriptor.         The default value for the Client Characteristic Configuration descriptor is 0x00. Upon connection of non-binded clients, this descriptor is set to the default value.  </informativeText>
       </descriptor>
     </characteristic>
     
     <!--GPS Longitude-->
-    <characteristic const="false" id="Long" name="GPS Longitude" sourceId="" uuid="c75d046c-d40e-4ac8-a92a-a0905ae85c97">
+    <characteristic const="false" id="Long" name="GPS Longitude" sourceId="" uuid="2A1C">
       <informativeText/>
-      <value length="6" type="hex" variable_length="false">00</value>
+      <value length="17" type="hex" variable_length="false"/>
       <properties>
         <indicate authenticated="false" bonded="false" encrypted="false"/>
       </properties>
       
       <!--Client Characteristic Configuration-->
-      <descriptor const="false" discoverable="true" id="client_characteristic_configuration_7" name="Client Characteristic Configuration" sourceId="org.bluetooth.descriptor.gatt.client_characteristic_configuration" uuid="2902">
+      <descriptor const="false" discoverable="true" id="client_characteristic_configuration9" name="Client Characteristic Configuration" sourceId="org.bluetooth.descriptor.gatt.client_characteristic_configuration" uuid="2902">
         <properties>
           <read authenticated="false" bonded="false" encrypted="false"/>
           <write authenticated="false" bonded="false" encrypted="false"/>
         </properties>
-        <value length="1" type="hex" variable_length="false">00</value>
-        <informativeText/>
+        <value length="2" type="hex" variable_length="false"/>
+        <informativeText>Abstract:  The Client Characteristic Configuration descriptor defines how the characteristic may be configured by a specific client.  Summary:  This descriptor shall be persistent across connections for bonded devices.         The Client Characteristic Configuration descriptor is unique for each client. A client may read and write this descriptor to determine and set the configuration for that client.         Authentication and authorization may be required by the server to write this descriptor.         The default value for the Client Characteristic Configuration descriptor is 0x00. Upon connection of non-binded clients, this descriptor is set to the default value.  </informativeText>
+      </descriptor>
+    </characteristic>
+    
+    <!--GPS Altitude-->
+    <characteristic const="false" id="Alt" name="GPS Altitude" sourceId="" uuid="2A1C">
+      <informativeText/>
+      <value length="17" type="hex" variable_length="false"/>
+      <properties>
+        <indicate authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+      
+      <!--Client Characteristic Configuration-->
+      <descriptor const="false" discoverable="true" id="client_characteristic_configuration10" name="Client Characteristic Configuration" sourceId="org.bluetooth.descriptor.gatt.client_characteristic_configuration" uuid="2902">
+        <properties>
+          <read authenticated="false" bonded="false" encrypted="false"/>
+          <write authenticated="false" bonded="false" encrypted="false"/>
+        </properties>
+        <value length="2" type="hex" variable_length="false"/>
+        <informativeText>Abstract:  The Client Characteristic Configuration descriptor defines how the characteristic may be configured by a specific client.  Summary:  This descriptor shall be persistent across connections for bonded devices.         The Client Characteristic Configuration descriptor is unique for each client. A client may read and write this descriptor to determine and set the configuration for that client.         Authentication and authorization may be required by the server to write this descriptor.         The default value for the Client Characteristic Configuration descriptor is 0x00. Upon connection of non-binded clients, this descriptor is set to the default value.  </informativeText>
       </descriptor>
     </characteristic>
   </service>

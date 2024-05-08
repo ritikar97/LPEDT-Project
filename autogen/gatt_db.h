@@ -23,7 +23,8 @@ extern const sli_bt_gattdb_t gattdb;
 #define gattdb_BPM                            35
 #define gattdb_Lat                            39
 #define gattdb_Long                           42
-#define gattdb_ota_control                    46
+#define gattdb_Alt                            45
+#define gattdb_ota_control                    49
 
 
 #endif // __GATT_DB_H

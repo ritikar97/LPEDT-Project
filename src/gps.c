@@ -5,22 +5,27 @@
 #include <string.h>
 #include "src/lcd.h"
 #include "src/gpio.h"
+#include <stdint.h>
 
 #define LEUART_PORT   gpioPortC
 #define LEUART_RX_PIN (11)
 #define LEUART_TX_PIN (10)
-#define LEUART_BUFSIZE (256) // Adjust buffer size as per your requirements
+#define LEUART_BUFSIZE (1024) // Adjust buffer size as per your requirements
 
 // Global variables
 char leuartBuffer[LEUART_BUFSIZE];
 volatile int leuartIndex = 0;
 volatile bool gnggaReceived = false;
+float latitude, longitude, altitude;
+
 
 void initLEUART(void)
 {
     // Enable LEUART peripheral clock
     CMU_ClockEnable(cmuClock_GPIO, true);
 
+    // Configure LEUART pins
+    GPIO_PinModeSet(LEUART_PORT, LEUART_TX_PIN, gpioModePushPull, 1);
     GPIO_PinModeSet(LEUART_PORT, LEUART_RX_PIN, gpioModeInput, 0);
 
     CMU_ClockEnable(cmuClock_HFLE, true);
@@ -30,19 +35,14 @@ void initLEUART(void)
     CMU_ClockEnable(cmuClock_LEUART0, true);
     CMU_ClockDivSet(cmuClock_LEUART0, cmuClkDiv_1); 
     
-
-    // Configure LEUART pins
-    // GPIO_PinModeSet(LEUART_PORT, LEUART_TX_PIN, gpioModePushPull, 1);
-    
-
     // Initialize LEUART settings
     LEUART_Init_TypeDef leuartInit = LEUART_INIT_DEFAULT;
     LEUART_Init(LEUART0, &leuartInit);
 
     // Enable RX and TX for LEUART
     LEUART0->CTRL |= LEUART_CTRL_INV;
-    LEUART0->ROUTELOC0 = /* USART_ROUTELOC0_TXLOC_LOC3 | */ USART_ROUTELOC0_RXLOC_LOC15;
-    LEUART0->ROUTEPEN |= USART_ROUTEPEN_RXPEN /*| USART_ROUTEPEN_TXPEN*/;
+    LEUART0->ROUTELOC0 =  USART_ROUTELOC0_TXLOC_LOC15 |  USART_ROUTELOC0_RXLOC_LOC15;
+    LEUART0->ROUTEPEN |= USART_ROUTEPEN_RXPEN | USART_ROUTEPEN_TXPEN;
 
     // Enable RXDATAV interrupt
     LEUART_IntEnable(LEUART0, LEUART_IEN_RXDATAV);
@@ -89,34 +89,45 @@ void LEUART0_IRQHandler(void)
     {
         char receivedChar = LEUART_Rx(LEUART0);
 
+//        displayPrintf(DISPLAY_ROW_12, "%c", receivedChar);
         // Check if it's a new sentence or still parsing the existing one
         if (leuartIndex == 0 && receivedChar != '$') {
+            gpioLEDOff();
+
             // Ignore characters until a new sentence starts
             return;
         }
 
+         gpioLEDOn();
         // Store the received character
         leuartBuffer[leuartIndex++] = receivedChar;
 
         // Check if the buffer is full or a complete GNGGA sentence is received
         if (leuartIndex >= LEUART_BUFSIZE - 1 || (receivedChar == '\n' && leuartIndex > 7)) // Ensure at least $GNGGA,\n is received
         {
+            displayPrintf(DISPLAY_ROW_10, "End of Buffer");
             // Null-terminate the string
             leuartBuffer[leuartIndex] = '\0';
 
             // Check if the buffer contains a GNGGA sentence
             if (strstr(leuartBuffer, "$GNGGA") != NULL)
             {
+                displayPrintf(DISPLAY_ROW_11, "No GNGGA");
                 // Tokenize and print GNGGA data
                 printGNGGAData();
                 gnggaReceived = true; // Flag that a GNGGA sentence is received
             }
             else
             {
+                displayPrintf(DISPLAY_ROW_11, "GNGGA");
                 // Clear the buffer if it's not a GNGGA sentence
                 leuartIndex = 0;
             }
         }
+        else
+          {
+            displayPrintf(DISPLAY_ROW_10, "");
+          }
     }
 }
 
@@ -129,14 +140,13 @@ bool getGPSStatus()
 void printGNGGAData()
 {
     char *token;
-    char *copy = strdup(leuartBuffer); // Make a copy of the sentence to avoid modifying the original
+    char *copy = strdup(&leuartBuffer[0]); // Make a copy of the sentence to avoid modifying the original
     
     // Split the sentence into fields using comma as delimiter
     token = strtok(copy, ",");
     
     // Loop through the fields to find latitude, longitude, and altitude
     int fieldIndex = 0;
-    float latitude, longitude, altitude;
     while (token != NULL)
     {
         if (fieldIndex == 2) // Latitude
@@ -159,8 +169,25 @@ void printGNGGAData()
     
     free(copy); // Free the memory allocated for the copy
 
+    
+
     // Print latitude, longitude, and altitude on the screen
-    displayPrintf(DISPLAY_ROW_7, "Latitude: %.6f", latitude);
-    displayPrintf(DISPLAY_ROW_8, "Longitude: %.6f", longitude);
-    displayPrintf(DISPLAY_ROW_9, "Altitude: %.2f meters", altitude);
+    displayPrintf(DISPLAY_ROW_7, "Latitude: %.2f", (float)latitude/100.0);
+    displayPrintf(DISPLAY_ROW_8, "Longitude: %.2f", (float)longitude / 100.0);
+    displayPrintf(DISPLAY_ROW_9, "Altitude: %.2f meters", (float)altitude/100.0);
+}
+
+int32_t getLat()
+{
+    return (int32_t)latitude;
+}
+
+int32_t getLong()
+{
+    return (int32_t)longitude;
+}
+
+int32_t getAlt()
+{
+    return (int32_t)altitude;
 }

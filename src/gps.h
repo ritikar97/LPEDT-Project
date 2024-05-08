@@ -53,6 +53,9 @@ void initLEUART(void);
 bool getGPSStatus();
 
 void printGNGGAData();
+int32_t getLat();
+int32_t getLong();
+int32_t getAlt();
 
 
 

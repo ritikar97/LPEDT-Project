@@ -4,7 +4,7 @@
     <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
     <property object="I2C0" propertyId="ABModule.selectedRequirement" value="i2c%T%SL_I2CSPM_SENSOR%T%sl_i2cspm_sensor_config.h"/>
     <property object="I2C0" propertyId="ABPeripheral.included" value="true"/>
-    <property object="LEUART0" propertyId="ABModule.selectedRequirement" value="leuart%T%SL_UARTDRV_LEUART_VCOM%T%sl_uartdrv_leuart_vcom_config.h"/>
+    <property object="LEUART0" propertyId="ABModule.selectedRequirement" value="leuart%T%SL_IOSTREAM_LEUART_VCOM%T%sl_iostream_leuart_vcom_config.h"/>
     <property object="LEUART0" propertyId="ABPeripheral.included" value="true"/>
     <property object="PA0" propertyId="pin.reserve" value="Reserved"/>
     <property object="PA1" propertyId="pin.reserve" value="Reserved"/>

@@ -14,6 +14,7 @@
 #include "ble.h"
 #include "gatt_db.h"
 #include <stdbool.h>
+#include "src/gps.h"
 
 //#define INCLUDE_LOG_DEBUG 1
 #include "src/log.h"
@@ -82,6 +83,10 @@ void bt_handle_event(sl_bt_msg_t *event)
       ble_data.indication_in_flight = false;
       ble_data.indication_temp_measurement_en = false;
       ble_data.indication_bpm_measurement_en = false;
+      ble_data.indication_lat_en = false;
+      ble_data.indication_long_en = false;
+      ble_data.indication_alt_en = false;
+
 
       // Call functions required after boot
       // Get unique BT device address
@@ -187,7 +192,7 @@ void bt_handle_event(sl_bt_msg_t *event)
                   if(getSystemState())
                   {
                     int32_t temp_in_celsius = getTempInCelsius();
-                    bt_send_temp(temp_in_celsius);
+                    bt_send_temp(temp_in_celsius, gattdb_temperature_measurement, ble_data.indication_temp_measurement_en);
                   }
               }
               else
@@ -214,6 +219,60 @@ void bt_handle_event(sl_bt_msg_t *event)
                 ble_data.indication_bpm_measurement_en = false;
             }
           }
+          if(event -> data.evt_gatt_server_characteristic_status.characteristic == gattdb_Lat)
+          {
+              // Check if indications were enabled
+              if((event -> data.evt_gatt_server_characteristic_status.client_config_flags == sl_bt_gatt_server_indication)
+                  || event -> data.evt_gatt_server_characteristic_status.client_config_flags == sl_bt_gatt_server_notification_and_indication)
+              {
+                  ble_data.indication_lat_en = true;
+                  if(getSystemState())
+                  {
+                    int32_t lat = getLat();
+                    bt_send_temp(lat, gattdb_Lat,  ble_data.indication_lat_en);
+                  }
+              }
+              else
+              {
+                  ble_data.indication_lat_en = false;
+              }
+          }
+          if(event -> data.evt_gatt_server_characteristic_status.characteristic == gattdb_Long)
+          {
+              // Check if indications were enabled
+              if((event -> data.evt_gatt_server_characteristic_status.client_config_flags == sl_bt_gatt_server_indication)
+                  || event -> data.evt_gatt_server_characteristic_status.client_config_flags == sl_bt_gatt_server_notification_and_indication)
+              {
+                  ble_data.indication_long_en = true;
+                  if(getSystemState())
+                  {
+                    int32_t longitude = getLong();
+                    bt_send_temp(longitude, gattdb_Long,  ble_data.indication_long_en);
+                  }
+              }
+              else
+              {
+                  ble_data.indication_long_en = false;
+              }
+          }
+          if(event -> data.evt_gatt_server_characteristic_status.characteristic == gattdb_Alt)
+          {
+              // Check if indications were enabled
+              if((event -> data.evt_gatt_server_characteristic_status.client_config_flags == sl_bt_gatt_server_indication)
+                  || event -> data.evt_gatt_server_characteristic_status.client_config_flags == sl_bt_gatt_server_notification_and_indication)
+              {
+                  ble_data.indication_alt_en = true;
+                  if(getSystemState())
+                  {
+                    int32_t Alt = getAlt();
+                    bt_send_temp(Alt, gattdb_Alt,  ble_data.indication_alt_en);
+                  }
+              }
+              else
+              {
+                  ble_data.indication_alt_en = false;
+              }
+          }
       }
       // Check if remote GATT received indication successfully
       else if(event -> data.evt_gatt_server_characteristic_status.status_flags == sl_bt_gatt_server_confirmation)
@@ -238,7 +297,7 @@ void bt_handle_event(sl_bt_msg_t *event)
 
 
 
-void bt_send_temp(uint32_t temp_in_celsius)
+void bt_send_temp(uint32_t temp_in_celsius, uint16_t attribute, bool enFlag)
 {
   sl_status_t sc;
   uint8_t temp[4];
@@ -253,7 +312,7 @@ void bt_send_temp(uint32_t temp_in_celsius)
   UINT32_TO_BITSTREAM(temp_c_ptr, temp_in_celsius);
 
   // Write temperature attribute
-  sc = sl_bt_gatt_server_write_attribute_value(gattdb_temperature_measurement, 0, 4, temp_c_ptr);
+  sc = sl_bt_gatt_server_write_attribute_value(attribute, 0, 4, temp_c_ptr);
   check_status(sc, "sl_bt_gatt_server_write_attribute_value");
 
   // Convert temperature into IEEE floating point format
@@ -263,12 +322,12 @@ void bt_send_temp(uint32_t temp_in_celsius)
   UINT32_TO_BITSTREAM(p, htm_temperature_flt);
 
   // If okay to send indication, send to client
-  if(ble_s -> connection_open_flag && ble_s -> indication_temp_measurement_en
+  if(ble_s -> connection_open_flag && enFlag
       && !(ble_s -> indication_in_flight))
   {
       sc = sl_bt_gatt_server_send_indication(
                           ble_s -> connectionHandle,
-                          gattdb_temperature_measurement,
+                          attribute,
                           5,
                           &htm_temperature_buffer[0]);
 
